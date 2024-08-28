@@ -8,10 +8,10 @@ import useStyles from "./styles"
 
 
 
-const Map = () => {
+const Map = ({setCoordinates , setBounds , coordinates , places , setChildClicked}) => {
   const classes= useStyles();
   const isMobile = useMediaQuery('(min-width:600px')
-  let coordinates= {lat:0 , lng:0}
+  // let coordinates= {lat:0 , lng:0}
   return (
     <div className={classes.mapContainer}>
       <GoogleMapReact 
@@ -21,8 +21,17 @@ const Map = () => {
           defaultZoom={14}
           margin={[50,50,50,50]}
           options={''}
-          onChange={''}
-          onChildClick={''}
+          onChange={(e)=>{
+            console.log(e);
+            setCoordinates({lat:e.center.lat,lng:e.center.lng})
+            setBounds({ne:e.marginBounds.ne , sw:e.marginBounds.sw})
+            
+          }}
+          onChildClick={(child=>{
+            console.log(child);
+            setChildClicked(child)
+            
+          })}
       
       >
         </GoogleMapReact> 

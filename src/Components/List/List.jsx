@@ -1,96 +1,131 @@
-import React, { useState } from 'react'
-import { CircularProgress,Grid,InputLabel,MenuItem,FormControl,Typography , Select } from '@material-ui/core';
+import React, { useState, useEffect, createRef } from "react";
+import {
+  CircularProgress,
+  Grid,
+  Typography,
+  MenuItem,
+  Box,
+  IconButton,
+  TextField,
+  useMediaQuery,
+} from "@material-ui/core";
+import PlaceDetails from "../PlaceDetails/PlaceDetails";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
+import HotelIcon from "@material-ui/icons/Hotel";
+import AttractionsIcon from "@material-ui/icons/LocalActivity";
+import GridOnIcon from "@material-ui/icons/GridOn";
+import ListIcon from "@material-ui/icons/List";
+import { useStyles } from "./styles";
 
-import useStyles from "./styles"
+const List = ({places,childClicked,isLoading,type,setType,rating,setRating,}) => {
 
-const List = () => {
   const classes = useStyles();
-  const [type,setType]=useState("")
+  const [elRefs, setElRefs] = useState([]);
+  const [layout, setLayout] = useState("grid");
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  useEffect(() => {
+    const refs = Array(places?.length)
+      .fill()
+      .map((_, i) => elRefs[i] || createRef());
+
+    setElRefs(refs);
+  }, [places]);
+
+  const handleLayoutChange = (newLayout) => {
+    setLayout(newLayout);
+  };
+console.log(places);
+
   return (
     <div className={classes.container}>
-    <Typography variant="h4">Dining, Accomodation & Attraction around you</Typography>
-    <div className="flex flex-col items-start gap-4 overflow-hidden rounded-md p-6 shadow-sm shadow-[#00000050]">
-      <span className="text-center font-mono text-base font-black uppercase text-neutral-600">
-        Select What you are Looking for
-      </span>
-      <div className="flex items-center gap-4">
-        {/* Male Radio Button */}
-        <div className="relative flex h-[50px] w-[50px] items-center justify-center">
-          <input
-            type="radio"
-            id="male"
-            name="gender"
-            value="male"
-            className="peer z-10 h-full w-full cursor-pointer opacity-0"
-            checked={type === 'male'}
-            onChange={() => setType('male')}
-          />
-          <div className="absolute h-full w-full rounded-full bg-blue-100 p-4 shadow-sm shadow-[#00000050] ring-blue-400 duration-300 peer-checked:scale-110 peer-checked:ring-2"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="35px"
-            height="35px"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="absolute stroke-blue-400"
-          >
-            <path d="M15.563 16.12C14.871 16.81 13.989 17.277 13.029 17.462C12.062 17.649 11.061 17.546 10.152 17.165C8.291 16.386 7.073 14.572 7.057 12.555C7.047 11.072 7.708 9.663 8.856 8.724C10.004 7.784 11.515 7.414 12.967 7.717C13.924 7.934 14.796 8.429 15.472 9.14C16.421 10.05 16.97 11.3 16.999 12.614C17.008 13.928 16.491 15.19 15.563 16.12Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+      <Typography variant="h4" className={classes.title}>
+        <b>Explore Dining, Accommodations, and Attractions Nearby</b>
+      </Typography>
+      {isLoading ? (
+        <div className={classes.loading}>
+          <CircularProgress size="5rem" />
         </div>
-
-        {/* Female Radio Button */}
-        <div className="relative flex h-[50px] w-[50px] items-center justify-center ">
-          <input
-            type="radio"
-            id="female"
-            name="gender"
-            value="female"
-            className="peer z-10 h-full w-full cursor-pointer opacity-0 "
-            checked={type === 'female'}
-            onChange={() => setType('female')}
+      ) : (
+        <>
+          <form className={classes.form}>
+            <TextField
+              select
+              label="Type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              variant="outlined"
+              className={classes.textField}
+              InputLabelProps={{ className: classes.inputLabel }}
+              SelectProps={{ className: classes.select }}
+            >
+              <MenuItem value="restaurants">
+                <RestaurantIcon className={classes.icon}  /> Restaurants
+              </MenuItem>
+              <MenuItem value="hotels">
+                <HotelIcon className={classes.icon} /> Accommodations
+              </MenuItem>
+              <MenuItem value="attractions">
+                <AttractionsIcon className={classes.icon} /> Attractions
+              </MenuItem>
+            </TextField>
+            <TextField
+              select
+              label="Rating"
+              value={rating}
+              onChange={(e) => setRating(e.target.value)}
+              variant="outlined"
+              className={classes.textField}
+              InputLabelProps={{ className: classes.inputLabel }}
+              SelectProps={{ className: classes.select }}
+            >
+              <MenuItem value={0}>All</MenuItem>
+              <MenuItem value={3}>Above 3.0 ★</MenuItem>
+              <MenuItem value={4}>Above 4.0 ★</MenuItem>
+              <MenuItem value={4.5}>Above 4.5 ★</MenuItem>
+            </TextField>
+            {!isMobile &&(
+              <Box  className={classes.iconsContainer}>
+              <IconButton onClick={() => handleLayoutChange("grid")}>
+                <GridOnIcon
+                  className={
+                    layout === "grid" ? classes.activeIcon : classes.icon
+                  }
+                />
+              </IconButton>
+              <IconButton onClick={() => handleLayoutChange("list")}>
+                <ListIcon
+                  className={
+                    layout === "list" ? classes.activeIcon : classes.icon
+                  }
+                />
+              </IconButton>
+            </Box>
+            )}
             
-          />
-          <div className="absolute h-full w-full rounded-full bg-pink-100 p-2 shadow-sm shadow-[#00000050] ring-pink-400 duration-300 peer-checked:scale-110 peer-checked:ring-2"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="35px"
-            height="35px"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="absolute fill-pink-400"
-          >
-            <path d="M20 9C20 13.08 16.945 16.447 12.998 16.938C12.999 16.958 13 16.979 13 17V19H14C14.552 19 15 19.448 15 20C15 20.552 14.552 21 14 21H13V22C13 22.552 12.552 23 12 23C11.448 23 11 22.552 11 22V21H10C9.448 21 9 20.552 9 20C9 19.448 9.448 19 10 19H11V17C11 16.979 11.001 16.958 11.002 16.938C7.055 16.447 4 13.08 4 9C4 4.582 7.582 1 12 1C16.418 1 20 4.582 20 9Z" />
-          </svg>
-        </div>
-
-        {/* Non-binary Radio Button */}
-        <div className="relative flex h-[50px] w-[50px] items-center justify-center">
-          <input
-            type="radio"
-            id="non-binary"
-            name="gender"
-            value="non-binary"
-            className="peer z-10 h-full w-full cursor-pointer opacity-0"
-            checked={type === 'non-binary'}
-            onChange={() => setType('non-binary')}
-          />
-          <div className="absolute h-full w-full rounded-full bg-purple-100 p-2 shadow-sm shadow-[#00000050] ring-purple-400 duration-300 peer-checked:scale-110 peer-checked:ring-2"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="35px"
-            height="35px"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="absolute fill-purple-400"
-          >
-            <path d="M12 1C6.477 1 2 5.477 2 12C2 18.523 6.477 23 12 23C17.523 23 22 18.523 22 12C22 5.477 17.523 1 12 1ZM12 19C10.343 19 9 17.657 9 16H15C15 17.657 13.657 19 12 19ZM12 14C9.243 14 7 11.757 7 9C7 6.243 9.243 4 12 4C14.757 4 17 6.243 17 9C17 11.757 14.757 14 12 14Z" />
-          </svg>
-        </div>
-      </div>
-      </div>
-        </div>
-    
-  )
-}
-
-export default List
+          </form>
+          <Grid container spacing={3} className={classes.list}>
+            {places?.map((place, i) => (
+              <Grid
+                ref={elRefs[i]}
+                item
+                key={i}
+                xs={12}
+                sm={layout === "grid" ? 6 : 12}
+                md={layout === "grid" ? 4 : 12}
+              >
+                <PlaceDetails
+                  place={place}
+                  selected={Number(childClicked) === i}
+                  refProp={elRefs[i]}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+    </div>
+  );
+};
+export default List;
