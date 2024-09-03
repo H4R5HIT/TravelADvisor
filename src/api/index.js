@@ -4,7 +4,7 @@ export const getPlaces = async (type, ne,sw)=>{
 
 
     try{
-        
+       
         const {data:{data}} = await axios.get(URL,{
             params: {
                 bl_latitude: sw.lat,
@@ -14,11 +14,14 @@ export const getPlaces = async (type, ne,sw)=>{
           
               },
               headers: {
-                'x-rapidapi-key': 'a0df37b28fmsh8dda501f14992efp1c8ba2jsnf03aefd90cd3',
+                'x-rapidapi-key': '21b292c071msh874858fb6434357p15b83djsn18361062b3c7',
                 'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
               }
         });
+        console.log("it is api dadta",data);
+        
         return data;
+
     }
     catch(error)
     {
@@ -33,7 +36,7 @@ export const weatherData= async (lat,lng)=>{
           
           try {
               const response = await axios.request(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${weatheApi}`);
-              console.log(response.data);
+       
               return response.data;
           } catch (error) {
               console.error(error);

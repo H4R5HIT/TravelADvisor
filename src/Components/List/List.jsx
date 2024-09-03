@@ -18,6 +18,8 @@ import ListIcon from "@material-ui/icons/List";
 import { useStyles } from "./styles";
 
 const List = ({places,childClicked,isLoading,type,setType,rating,setRating,}) => {
+  console.log("this is places",places);
+  
 
   const classes = useStyles();
   const [elRefs, setElRefs] = useState([]);
@@ -36,7 +38,6 @@ const List = ({places,childClicked,isLoading,type,setType,rating,setRating,}) =>
   const handleLayoutChange = (newLayout) => {
     setLayout(newLayout);
   };
-console.log(places);
 
   return (
     <div className={classes.container}>

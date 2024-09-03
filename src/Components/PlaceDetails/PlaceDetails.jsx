@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import {
   Box,
   Typography,
@@ -11,10 +11,12 @@ import {
   IconButton,
 } from "@material-ui/core";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import styled from "styled-components";
+
 import PhoneIcon from "@material-ui/icons/Phone";
 import LanguageIcon from "@material-ui/icons/Language";
 import TripOriginIcon from "@material-ui/icons/TripOrigin";
-import Rating from "@material-ui/lab/Rating";
+import Rating from '@mui/material/Rating';
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ShareIcon from "@material-ui/icons/Share";
@@ -27,12 +29,21 @@ const PlaceDetails = ({ place, selected, refProp }) => {
   const handleFavoriteClick = () => {
     setIsFavorited(!isFavorited);
   };
+  
 
-  if (selected)
-    refProp?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (isFirstRender && selected) {
+      refProp?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      setIsFirstRender(false);
+    }
+  }, [selected]);
 
   return (
-    <Card className={classes.card} elevation={6}>
+    
+    <Card className={classes.card} elevation={6} onClick={() => window.open(place.website, "_blank")}>
       <CardMedia
         className={classes.media}
         image={
@@ -48,8 +59,17 @@ const PlaceDetails = ({ place, selected, refProp }) => {
         </Typography>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="subtitle1" className={classes.numReviews}>
-            <Rating value={Number(place.rating)} readOnly /> &nbsp; [
-            {place.num_reviews} reviews]
+          <div className="flex items-center mt-2 text-gray-600">
+          <svg
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 fill-current text-yellow-500"
+          >
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+          <span className="ml-2">{place.rating} ({place.num_reviews} reviews)</span>
+        </div>
           </Typography>
         </Box>
         {/* <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -65,6 +85,7 @@ const PlaceDetails = ({ place, selected, refProp }) => {
           </Typography>
         </Box>
         {place?.awards?.map((award) => (
+          
           <Box
             key={award.display_name}
             display="flex"
@@ -79,29 +100,32 @@ const PlaceDetails = ({ place, selected, refProp }) => {
           </Box>
         ))}
         <Box display="flex" flexWrap="wrap" my={1}>
-          {place?.cuisine?.map(({ name }) => (
-            <Chip
+          {place?.cuisine?.slice(0,5).map(({ name }) => {
+                const shortenedName = name.split(' ').slice(0, 1).join(' ');
+
+            return (<Chip
               key={name}
               size="small"
-              label={name}
+              label={shortenedName}
               className={classes.chip}
-            />
-          ))}
+            />)
+})}
         </Box>
         {place?.address ? (
           <Typography
             gutterBottom
             variant="subtitle2"
-            color="white"
+            // color="white"
             className={classes.subtitle}
           >
-            <LocationOnIcon /> &nbsp; {place.address}
+            {/* input.length > 5 ? `${input.substring(0, 5)}...` : input; */}
+            <LocationOnIcon /> &nbsp; {place.address.length > 40 ? place.address.substring(0,40) : place.address}...
           </Typography>
         ) : (
           <Typography
             gutterBottom
             variant="subtitle2"
-            color="white"
+            color="primary"
             className={classes.subtitle}
           >
             <LocationOnIcon /> &nbsp; No address available
@@ -112,7 +136,7 @@ const PlaceDetails = ({ place, selected, refProp }) => {
           <Typography
             gutterBottom
             variant="subtitle2"
-            color="white"
+            color="inherit"
             className={classes.spacing}
           >
             <PhoneIcon />
@@ -129,7 +153,7 @@ const PlaceDetails = ({ place, selected, refProp }) => {
           </Typography>
         )}
 
-        <CardActions className={classes.cardActions}>
+        {/* <CardActions className={classes.cardActions}>
 
           <button className={classes.botonElegante}   onClick={() => window.open(place.website, "_blank")}> Website
           </button>
@@ -144,7 +168,7 @@ const PlaceDetails = ({ place, selected, refProp }) => {
         <IconButton onClick={() => alert("Share functionality coming soon!")}>
           <ShareIcon className={classes.shareIcon} />
         </IconButton>
-      </CardActions>
+      </CardActions> */}
     </CardContent>
     </Card >
   );
@@ -152,20 +176,27 @@ const PlaceDetails = ({ place, selected, refProp }) => {
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    background: "linear-gradient(120deg,rgb(11,38,59),rgb(9, 16, 36))",
+    cursor:"pointer",
     borderRadius: "15px",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-    color: theme.palette.text.primary,
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0)",
+    // color: theme.palette.text.primary,
     overflow: "hidden",
+    transition: "box-shadow 0.1s ease-in-out", // Smooth transition
+    "&:hover": {
+      boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)", // Box shadow on hove
+    },
   },
+
   media: {
-    height: 350,
+    margin:"10px 10px 0 10px",
+    height: 300,
     borderRadius: "15px 15px 0 0",
   },
   title: {
     fontFamily: "'Poppins', sans-serif",
     fontWeight: 700,
     color: theme.palette.text.primary,
+    marginBottom: 0,
   },
   chip: {
     margin: "5px 5px 5px 0",
@@ -193,6 +224,7 @@ const useStyles = makeStyles((theme) => ({
   },
   numReviews: {
     marginLeft: theme.spacing(1),
+    
     display: "flex",
     alignItems: "center",
   },

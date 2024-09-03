@@ -1,4 +1,4 @@
-import { useState , useEffect } from 'react'
+import { useState , useEffect , useRef } from 'react'
 import { CssBaseline , Grid } from '@mui/material'
 import './App.css'
 import Header from './Components/Header/Header'
@@ -21,12 +21,17 @@ function App() {
   const [rating, setRating] = useState("0");
   const [childClicked, setChildClicked] = useState(null);
 
+  const homeRef = useRef(null);
+
+  useEffect(() => {
+    homeRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
 
 
   useEffect(()=>{
     navigator.geolocation.getCurrentPosition(({coords:{latitude , longitude}})=>{
-      setCoordinates({lat :latitude , lng:longitude})
+      setCoordinates({lat :latitude , lng:longitude})      
 
 
     })
@@ -49,12 +54,14 @@ useEffect(() => {
   }
 }, [rating, places]);
 
+
+
 useEffect(() => {
   if (bounds) {
     setIsLoading(true);
     getPlaces(type, bounds.sw, bounds.ne).then((data) => {
       setPlaces(data?.filter((place) => place.name && place.num_reviews > 0));
-      setFilteredPlaces([]);
+      // setFilteredPlaces([]);
       setIsLoading(false);
     });
   }
@@ -64,10 +71,10 @@ useEffect(() => {
   return (
     <>
      <CssBaseline/>
-     <Header/>
-     <Home/>
-     
-     <Grid container spacing ={3} style={{width : '100%'}}>
+     <div ref={homeRef}>
+     <Home setCoordinates={setCoordinates}/>
+     </div>
+     <Grid container spacing ={3} style={{width : '100.3vw', backgroundColor:"rgb(232,232,232)" , marginTop:"1px"} }>
       <Grid item xs={12} md={4}>
       <WeatherCard coordinates={coordinates}/>
      </Grid>

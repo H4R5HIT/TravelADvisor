@@ -2,9 +2,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
  export  const useStyles = makeStyles((theme) => ({
   title: {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "RALEWAY, sans-serif",
     fontWeight: 600,
-    background: "rgb(214, 227, 245)",
+    background: "rgb(23, 23, 23)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     marginBottom: theme.spacing(1),
@@ -37,7 +37,7 @@ import { makeStyles } from "@material-ui/core/styles";
   },
   select: {
     padding: theme.spacing(1.5, 2),
-    color:"rgb(214, 227, 245)",
+    color:"rgb(23, 23, 23)",
     "&:focus": {
       backgroundColor: "transparent",
     },
@@ -67,6 +67,7 @@ import { makeStyles } from "@material-ui/core/styles";
     alignItems: "center",
   },
   container: {
+    width:"100%",
     padding: "25px",
   
     borderRadius: theme.shape.borderRadius,
@@ -75,10 +76,13 @@ import { makeStyles } from "@material-ui/core/styles";
     marginBottom: "20px",
   },
   list: {
+    marginLeft:"15%",
+
     height: "75vh",
+    width:"70vw",
     overflow: "auto",
      borderRadius: theme.shape.borderRadius,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     padding: theme.spacing(2),
     marginTop: theme.spacing(1),
     "&::-webkit-scrollbar": {
