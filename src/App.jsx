@@ -14,7 +14,6 @@ function App() {
   const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [coordinates,setCoordinates]=useState({})
   const [type,setType]=useState("restaurants")
-  const [data,setData]=useState("")
   const [bounds,setBounds]=useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const [places, setPlaces] = useState([]);
@@ -37,20 +36,11 @@ function App() {
     })
   },[])
 
-useEffect(()=>{
-  if(bounds){
-    getPlaces(bounds.ne,bounds.sw).then((data)=>{
-      console.log(data);
-      setData(data)
-      
-    })
-  }
-},[coordinates,bounds])
 
 useEffect(() => {
-  if (places) {
-    const filteredPlaces = places.filter((place) => place.rating > rating);
-    setFilteredPlaces(filteredPlaces);
+  if(places) {
+  const filteredPlaces = places.filter((place) => place.rating > rating);
+  setFilteredPlaces(filteredPlaces);
   }
 }, [rating, places]);
 
@@ -61,7 +51,7 @@ useEffect(() => {
     setIsLoading(true);
     getPlaces(type, bounds.sw, bounds.ne).then((data) => {
       setPlaces(data?.filter((place) => place.name && place.num_reviews > 0));
-      // setFilteredPlaces([]);
+      setFilteredPlaces([]);
       setIsLoading(false);
     });
   }

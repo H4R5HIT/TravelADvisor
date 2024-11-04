@@ -4,6 +4,9 @@ import { Paper, Typography, useMediaQuery } from '@material-ui/core';
 import LocationOnOutlinedIcon from "@material-ui/icons/LocationOnOutlined"
 import { Rating } from '@material-ui/lab';
 import { makeStyles } from "@material-ui/core/styles";
+// const dotenv= require('dotenv').config();
+// console.log(process.env);
+
 
 
 // import useStyles from "./styles"
@@ -19,7 +22,7 @@ const Map = ({ setCoordinates, setBounds, coordinates, places, setChildClicked }
   return (
     <div className={classes.mapContainer}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: 'AIzaSyCw8SPMYFId_PXkxf6hqryJtqkf3K1Xz_A' }}
+        bootstrapURLKeys={{ key: import.meta.env.VITE_GOOGLE_MAPKEY }}
         defaultCenter={coordinates}
         center={coordinates}
         defaultZoom={15}
